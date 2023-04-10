@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
-
-#incldue "pawnage.h"
+#include "pawnage.h"
 
 #define BOARDSIZE 220
 #define WHITE 0
@@ -40,7 +39,9 @@ bool vacant(Point pos) {
     return true;
 }
 
-bool onboard(Point pos) { return (pos.x >= 0 && pos.y >= 0 && pos.x < 8 && pos.y < 8); }
+bool onboard(Point pos) { 
+return (pos.x >= 0 && pos.y >= 0 && pos.x < 8 && pos.y < 8); 
+}
 
 bool takeenemy(Point from, Point dest) {
 	// check if move is taking an enemy piece
@@ -106,6 +107,10 @@ void bishopmoves(Point pos) {
 	for (int n=1; n < 8 && addmove(pos,Point( -n, n)); n++); //down-right
 	for (int n=1; n < 8 && addmove(pos,Point( -n,-n)); n++); //down-left
 }
+void queenmoves(Point pos) {
+    rookmoves(pos);
+    bishopmoves(pos);
+}
 
 bool valid_move(Point from, Point to) {
     for (auto move : moves) 
@@ -133,10 +138,7 @@ void get_black_moves() {
 	    if (piece.type == 'R') rookmoves(piece.pos);
 	    if (piece.type == 'N') knightmoves(piece.pos);
 	    if (piece.type == 'B') bishopmoves(piece.pos);
-	    if (piece.type == 'Q') {
-		    rookmoves(piece.pos);
-		    bishopmoves(piece.pos);
-	    }
+	    if (piece.type == 'Q') queenmoves(piece.pos);
     }
 }
 
@@ -153,10 +155,7 @@ void get_white_moves() {
 	    if (piece.type == 'r') rookmoves(piece.pos);
 	    if (piece.type == 'n') knightmoves(piece.pos);
 	    if (piece.type == 'b') bishopmoves(piece.pos);
-	    if (piece.type == 'q') {
-		    rookmoves(piece.pos);
-		    bishopmoves(piece.pos);
-	    }
+	    if (piece.type == 'q') queenmoves(piece.pos);
     }
 }
 
@@ -164,8 +163,10 @@ bool inCheck(int side) {
 	char king;
 	Point kingpos;
 	//get opposing side moves 
-	if (side == BLACK) { king = 'K'; get_white_moves(); } 
-	else 		   { king = 'k'; get_black_moves(); }
+	if (side == BLACK) { 
+    king = 'K'; get_white_moves(); } 
+	else { 
+    king = 'k'; get_black_moves(); }
 	// get King position
 	for (auto piece : pieces) 
 		if (piece.type == king) kingpos = piece.pos;
@@ -247,8 +248,10 @@ static int turn;
 
   reset_game();
   while (1) {
-    if (turn == BLACK) { turn = do_computer_move(BLACK); }
-    if (turn == WHITE) { turn = do_computer_move(WHITE); }
+    if (turn == BLACK) { 
+      turn = do_computer_move(BLACK); }
+    if (turn == WHITE) { 
+      turn = do_computer_move(WHITE); }
 
     char board[8][8];
     // clear board
@@ -269,5 +272,5 @@ static int turn;
     printf("\n");
 
     int nextmove = scanf("%c");
-}
+    }
 }

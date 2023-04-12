@@ -158,15 +158,17 @@ void get_white_moves() {
 	    if (piece.type == 'q') queenmoves(piece.pos);
     }
 }
-
+void get_valid_moves( int side) {
+	if (side == BLACK) get_black_moves();
+	if (side == WHITE) get_white_moves();
+}
 bool inCheck(int side) { 
 	char king;
 	Point kingpos;
 	//get opposing side moves 
-	if (side == BLACK) { 
-    king = 'K'; get_white_moves(); } 
-	else { 
-    king = 'k'; get_black_moves(); }
+	get_valid_moves(!side);
+	if (side == BLACK) king = 'K'; else king = 'k';
+
 	// get King position
 	for (auto piece : pieces) 
 		if (piece.type == king) kingpos = piece.pos;
@@ -177,11 +179,11 @@ bool inCheck(int side) {
 }
 
 move_t pick_computer_move(int side){
-    if (side == WHITE) get_white_moves();
-    else get_black_moves();
+    get_valid_moves(side);
 
     //favour taking a piece if possible
-    for (auto m: moves)  { if (takeenemy(m.from,m.to) && (rand() % 10 > 3)) return (m); }
+    for (auto m: moves)  
+	    if (takeenemy(m.from,m.to) && (rand() % 10 > 3)) return (m); 
     //or just pick any random valid move
     return (moves[rand() % moves.size()]);
 }
@@ -244,20 +246,15 @@ void reset_game() {
 
 
 int main() {
-static int turn;
+static int side;
 
   reset_game();
   while (1) {
-    if (turn == BLACK) { 
-      turn = do_computer_move(BLACK); }
-    if (turn == WHITE) { 
-      turn = do_computer_move(WHITE); }
-
     char board[8][8];
     // clear board
     for (int x=0;x<8;x++) 
     	    for (int y=0;y<8;y++)
-		board[y][x] = ' ';
+		board[y][x] = '-';
 
     // fill in piece positions
     for (auto piece : pieces)
@@ -267,10 +264,13 @@ static int turn;
     for (int x=0;x<8;x++) {
 	    printf("\n");
     	    for (int y=0;y<8;y++)
-		printf("%c",board[y][x]);
+		printf("%c ",board[y][x]);
     }
     printf("\n");
 
     int nextmove = scanf("%c");
+
+    side = do_computer_move(side); 
+
     }
 }

@@ -268,7 +268,8 @@ static int side;
     }
     printf("\n");
 
-    int nextmove = scanf("%c");
+    char nextmove[8];
+    scanf("%s",nextmove);
 
     side = do_computer_move(side); 
 
